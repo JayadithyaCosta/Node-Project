@@ -13,12 +13,16 @@ exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(null, title, imageUrl, description, price);
-  product.save()
-  .then(()=> {
-    res.redirect('/')
+  Product.create({
+    title: title,
+    price: price,
+    imageUrl: imageUrl,
+    description: description
   })
-  .catch(err => console.log(err));
+  .then(res => {
+    console.log('Created Product!')
+  })
+  .catch(err => console.log(err))
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -27,7 +31,7 @@ exports.getEditProduct = (req, res, next) => {
     return res.redirect('/');
   }
   const prodId = req.params.productId;
-  Product.findById(prodId, product => {
+  Product.findByPk(prodId, product => {
     if (!product) {
       return res.redirect('/');
     }
