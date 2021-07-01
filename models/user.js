@@ -16,6 +16,7 @@ class User {
     return db.collection('users').insertOne(this);
   }
 
+
   addToCart(product) {
 
       let cartProductIndex, updatedCartItems;
@@ -72,6 +73,21 @@ class User {
           };
         });
       });
+  }
+
+
+  deleteItemFromCart(productId){
+    const db = getDb();
+    const updatedCartItems = this.cart.items.filter(item => {
+      return item.productId.toString() !== productId.toString();
+    });
+
+    return db
+      .collection('users')
+      .updateOne(
+        { _id: new ObjectId(this._id) },
+        { $set: { cart: {items: updatedCartItems} } }
+      );
   }
 
 
