@@ -16,7 +16,8 @@ exports.postAddProduct = (req, res, next) => {
   const product = new Product({title: title, 
     imageUrl: imageUrl, 
     price: price, 
-    description: description
+    description: description,
+    userId: req.user
   });
 
   product
@@ -79,7 +80,11 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
   Product.find()
+  //.select('title price imageUrl -_id') //Only will show these 3 Variables 
+  //.populate('userId', 'name')
     .then(products => {
+
+      console.log(products)
       res.render('admin/products', {
         prods: products,
         pageTitle: 'Admin Products',
