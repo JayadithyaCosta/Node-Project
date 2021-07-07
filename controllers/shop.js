@@ -122,7 +122,9 @@ exports.getOrders = (req, res, next) => {
     res.render('shop/orders', {
       path: '/orders',
       pageTitle: 'Your Orders',
-      orders: orders
+      orders: orders,
+      isAuthenticated: req.session.isLoggedIn
+
     });
   })
     .catch(err => console.log(err));

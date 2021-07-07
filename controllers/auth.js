@@ -14,7 +14,17 @@ exports.postLogin = (req, res, next) => {
   .then(user => {
     req.session.isLoggedIn = true;
     req.session.user = user;
-    res.redirect('/');
+    //res.redirect('/') => This will sometimes redirect before the session data is saved into MongoDB. Hence using save() method
+    req.session.save((err)=> {
+      console.log(err);
+      res.redirect('/')
+    });
   })
   .catch(err => console.log(err));
+};
+
+exports.postLogout = (req, res, next) => {
+  req.session.destroy(()=> {
+      res.redirect('/')
+  });
 };
