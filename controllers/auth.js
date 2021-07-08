@@ -1,4 +1,5 @@
 const User = require('../models/user')
+const bcrypt = require('bcryptjs');
 
 exports.getLogin = (req, res, next) => {
   console.log(req.session.isLoggedIn);
@@ -18,20 +19,65 @@ exports.getSignup = (req, res, next) => {
 }
 
 exports.postLogin = (req, res, next) => {
-  User.findById('60df16b5fa6f7e20a0db23dc')
+  const email = req.body.email;
+  const password = req.body.password;
+  User.findOne({email: email})
   .then(user => {
-    req.session.isLoggedIn = true;
-    req.session.user = user;
-    //res.redirect('/') => This will sometimes redirect before the session data is saved into MongoDB. Hence using save() method
-    req.session.save((err)=> {
-      console.log(err);
-      res.redirect('/')
-    });
+    if(!user){
+      return res.redirect('/login')
+    }
+    bcrypt.compare(password, user.password)
+    .then(doMatch => {
+      if(doMatch){
+        req.session.isLoggedIn = true;
+        req.session.user = user;
+        //res.redirect('/') => This will sometimes redirect before the session data is saved into MongoDB. Hence using save() method
+        return req.session.save((err)=> {
+          console.log(err);
+          res.redirect('/')
+        });
+       
+      }
+      res.redirect('/login')
+    })
+    .catch(err => {
+      console.log(err)
+      res.redirect('/login')
+    })
+   
   })
   .catch(err => console.log(err));
 };
 
-exports.postSignup = (req, res, next) => {};
+exports.postSignup = (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  const confirmPassword = req.body.confirmPassword;
+
+  User.findOne({email: email})
+  .then(userDoc => {
+    if(userDoc){
+      return res.redirect('/signup');
+    }
+    return bcrypt
+    .hash(password, 12)
+    .then(hashedPassword => { //pass result to password to get a hashed password
+      const user = new User({
+        email: email,
+        password: hashedPassword,
+        cart: { items:[] }
+      })
+      return user.save();
+    })
+    .then(result=> {
+      res.redirect('/login')
+    });
+   
+  })  
+  .catch(err => {
+    console.log(err)
+  });
+};
 
 exports.postLogout = (req, res, next) => {
   req.session.destroy(()=> {
