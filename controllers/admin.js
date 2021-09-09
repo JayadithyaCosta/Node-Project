@@ -57,7 +57,24 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      console.log(err);
+      // return res.status(500).render("admin/edit-product", {
+      //   path: "admin/add-product",
+      //   pageTitle: "Add Product",
+      //   editing: false,
+      //   hasError: true,
+      //   product: {
+      //     title: title,
+      //     imageUrl: imageUrl,
+      //     price: price,
+      //     description: description,
+      //   },
+      //   errorMessage: "Database operation failed try again.",
+      //   validationError: [],
+      // });
+      // res.redirect("/500");
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error); // pass the error to next arguments where error handling middleware
     });
 };
 
@@ -83,7 +100,11 @@ exports.getEditProduct = (req, res, next) => {
         validationError: [],
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error); // pass the error to next arguments where error handling middleware
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -95,7 +116,7 @@ exports.postEditProduct = (req, res, next) => {
   const errors = validationResult(req);
 
   // let id = prodId.toString();
-  console.log(prodId)
+  console.log(prodId);
   if (!errors.isEmpty()) {
     console.log(errors.array());
     return res.status(422).render("admin/edit-product", {
