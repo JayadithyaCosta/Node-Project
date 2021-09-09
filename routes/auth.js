@@ -13,13 +13,17 @@ router.get("/signup", authController.getSignup);
 router.post(
   "/login",
   [
-    check("email").isEmail().withMessage("Please enter a valid email!"),
+    check("email")
+      .isEmail()
+      .withMessage("Please enter a valid email!")
+      .normalizeEmail(),
     check(
       "password",
       "Please enter a password with atleast 6 characters with only characters and numbers"
     )
       .isLength({ min: 6 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
   ],
   authController.postLogin
 );
@@ -42,21 +46,25 @@ router.post(
             return Promise.reject("E-mail Exists! Choose another one."); // Reject the promise with this error
           }
         });
-      }),
+      })
+      .normalizeEmail(),
 
     body(
       "password",
       "Please enter a password with only numbers and text with atleast 5 characters"
     )
       .isLength({ min: 5 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
 
-    body("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Passwords have to match!");
-      }
-      return true;
-    }),
+    body("confirmPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Passwords have to match!");
+        }
+        return true;
+      }),
   ],
   authController.postSignup
 );
