@@ -151,7 +151,11 @@ exports.postEditProduct = (req, res, next) => {
         res.redirect("/admin/products");
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error); // pass the error to next arguments where error handling middleware
+    });
 };
 
 exports.getProducts = (req, res, next) => {
@@ -167,7 +171,11 @@ exports.getProducts = (req, res, next) => {
         isAuthenticated: req.session.isLoggedIn,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error); // pass the error to next arguments where error handling middleware
+    });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
@@ -177,5 +185,9 @@ exports.postDeleteProduct = (req, res, next) => {
       console.log("Deleted Product!");
       res.redirect("/admin/products");
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error); // pass the error to next arguments where error handling middleware
+    });
 };

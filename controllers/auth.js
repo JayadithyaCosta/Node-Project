@@ -115,7 +115,11 @@ exports.postLogin = (req, res, next) => {
           res.redirect("/login");
         });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error); // pass the error to next arguments where error handling middleware
+    });
 };
 
 exports.postSignup = (req, res, next) => {
@@ -159,7 +163,9 @@ exports.postSignup = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error); // pass the error to next arguments where error handling middleware
     });
 };
 
@@ -217,7 +223,9 @@ exports.postReset = (req, res, next) => {
         });
       })
       .catch((err) => {
-        console.log(err);
+        const error = new Error(err);
+        error.httpStatusCode = 500;
+        return next(error); // pass the error to next arguments where error handling middleware
       });
   });
 };
@@ -240,7 +248,11 @@ exports.getNewPassword = (req, res, next) => {
         passwordToken: token,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error); // pass the error to next arguments where error handling middleware
+    });
 };
 
 exports.postNewPassword = (req, res, next) => {
@@ -268,5 +280,9 @@ exports.postNewPassword = (req, res, next) => {
       res.redirect("/login");
       // Send mail conf
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error); // pass the error to next arguments where error handling middleware
+    });
 };
