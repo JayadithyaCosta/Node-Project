@@ -28,7 +28,10 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: false }));  //Text fields only
+
+// app.use(bodyParser.urlencoded({ extended: false }));  //File handler
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({

@@ -23,7 +23,6 @@ router.post(
       .isLength({ min: 3 })
       .notEmpty()
       .trim(),
-    body("imageUrl", "Enter a valid URL").isURL().notEmpty().trim(),
     body("price", "Add Price!").isFloat().notEmpty().trim(),
     body("description", "Enter description with atleast 5 letters!")
       .isAlpha()
@@ -45,7 +44,6 @@ router.post(
       .isLength({ min: 3 })
       .notEmpty()
       .trim(),
-    body("imageUrl", "Enter a valid URL for Image").isURL().notEmpty().trim(),
     body("price", "Enter price!").isFloat().notEmpty().trim(),
     body("description", "Enter Description with atlease 5 letters!")
       .isAlpha()
