@@ -1,6 +1,8 @@
 const { validationResult } = require("express-validator");
 const Product = require("../models/product");
 
+const fileHelper = require("../util/file");
+
 exports.getAddProduct = (req, res, next) => {
   // if(!req.session.isLoggedIn){
   //   return res.redirect('/login') //Not scalable way to protect routes
@@ -160,6 +162,7 @@ exports.postEditProduct = (req, res, next) => {
       product.price = updatedPrice;
       product.description = updatedDesc;
       if (image) {
+        fileHelper.deleFile(product.imageUrl);
         product.imageUrl = image.path;
       }
 
@@ -197,7 +200,14 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.deleteOne({ _id: prodId, userId: req.user._id })
+  Product.findById(prodId)
+    .then((product) => {
+      if (!product) {
+        return next(new Error("Product not found."));
+      }
+      fileHelper.deleFile(product.imageUrl);
+      return Product.deleteOne({ _id: prodId, userId: req.user._id });
+    })
     .then(() => {
       console.log("Deleted Product!");
       res.redirect("/admin/products");
