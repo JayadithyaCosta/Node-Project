@@ -28,8 +28,8 @@ const fileStorage = multer.diskStorage({
     cb(null, "images");
   },
   filename: (req, file, cb) => {
-    cb(null, uniqid() + "-" + file.originalname);
-  },
+    cb(null, new Date().getTime() + '-' + file.originalname);
+},
 });
 
 const fileFilter = (req, file, cb) => {
