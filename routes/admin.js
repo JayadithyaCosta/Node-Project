@@ -1,7 +1,7 @@
 const path = require('path');
 
 const express = require('express');
-const { body } = require('express-validator/check');
+const { body, check } = require('express-validator');
 
 const adminController = require('../controllers/admin');
 const isAuth = require('../middleware/is-auth');
@@ -24,7 +24,7 @@ router.post(
       .trim(),
     body('price').isFloat(),
     body('description')
-      .isLength({ min: 5, max: 400 })
+      .isLength({ min: 5 })
       .trim()
   ],
   isAuth,
