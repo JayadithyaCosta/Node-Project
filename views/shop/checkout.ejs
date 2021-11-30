@@ -1,11 +1,10 @@
 <%- include('../includes/head.ejs') %>
-<link rel="stylesheet" href="/css/cart.css">
-
+    <link rel="stylesheet" href="/css/cart.css">
+    
     </head>
 
     <body>
         <%- include('../includes/navigation.ejs') %>
-
         <main>
             <ul class="cart__item-list">
                 <% products.forEach(p => { %>
@@ -17,6 +16,19 @@
             </ul>
             <div class="centered">
                 <h2>Total: <%= totalSum %></h2>
+            </div>
+            <div class="centered">
+                <button id="order-btn" class="btn">ORDER</button>
+                <script src="https://js.stripe.com/v3/"></script>
+                <script>
+                    var stripe = Stripe('pk_test_51K1R5LA3rebQuqonhAKBVWoYg1PZrNpylDzFXFVvNunwUL7WdRfIu2qYEgK8xrooCIZ23VwnvUj4jhdRLR7tfGPD00nNiDYlYh');
+                    var orderBtn = document.getElementById('order-btn');
+                    orderBtn.addEventListener('click', function() {
+                        stripe.redirectToCheckout({
+                            sessionId: '<%= sessionId %>'
+                        });
+                    });
+                </script>
             </div>
         </main>
         <%- include('../includes/end.ejs') %>
