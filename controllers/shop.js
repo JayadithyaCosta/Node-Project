@@ -298,7 +298,7 @@ exports.getInvoice = (req, res, next) => {
               " _ " +
               prod.quantity +
               " x " +
-              "$" +
+              "Rs. " +
               prod.product.price
           );
       });
